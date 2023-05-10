@@ -34,7 +34,7 @@ class HFModel(LM):
                 Recommeded to use "auto", which will help loading large models using accelerate. Defaults to "auto".
         """
         try:
-            from transformers import AutoModelForSeq2SeqLM, AutoModelForCausalLM, AutoTokenizer
+            from transformers import AutoModelForSeq2SeqLM, AutoModelForCausalLM, AutoTokenizer, LlamaForCausalLM, LlamaTokenizer
             import torch
         except ImportError as exc:
             raise ModuleNotFoundError(
@@ -46,6 +46,9 @@ class HFModel(LM):
         self.device_map = hf_device_map
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if not self.is_client:
+            if model[0] == "/":
+                #this is basically my mini trick to check if model is a path and if that is the case it shall be loaded as a llama model
+                self.model = LlamaForCausalLM.from_pretrained(model)
             try:
                 self.model = AutoModelForSeq2SeqLM.from_pretrained(
                     model if checkpoint is None else checkpoint,
@@ -58,7 +61,11 @@ class HFModel(LM):
                     device_map=hf_device_map
                 )
                 self.drop_prompt_from_output = True
-            self.tokenizer = AutoTokenizer.from_pretrained(model)
+            if model[0] == "/":
+                #this is basically my mini trick to check if model is a path and if that is the case it shall be loaded as a llama model
+                self.tokenizer = LlamaTokenizer.from_pretrained(model)
+            else:
+                self.tokenizer = AutoTokenizer.from_pretrained(model)
         self.history = []
 
     def basic_request(self, prompt, **kwargs):
