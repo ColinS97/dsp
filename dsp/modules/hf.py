@@ -1,6 +1,6 @@
 from typing import Optional, Literal
 from dsp.modules.lm import LM
-
+from peft import PeftModel
 
 def openai_to_hf(**kwargs):
     hf_kwargs = {}
@@ -49,6 +49,12 @@ class HFModel(LM):
             if model[0] == "/":
                 #this is basically my mini trick to check if model is a path and if that is the case it shall be loaded as a llama model
                 self.model = LlamaForCausalLM.from_pretrained(model)
+                if len(model.split("+"))==2:
+                    self.model = PeftModel.from_pretrained(
+                        self.model,
+                        model.split("+")[1],
+                        torch_dtype=torch.float16,
+                    )
             try:
                 self.model = AutoModelForSeq2SeqLM.from_pretrained(
                     model if checkpoint is None else checkpoint,
