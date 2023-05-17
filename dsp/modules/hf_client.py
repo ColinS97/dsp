@@ -13,7 +13,9 @@ class HFModelClient(HFModel):
         self.headers = {"Content-Type": "application/json; charset=utf-8"}
 
     def _generate(self, prompt, **kwargs):
-        payload = {"prompt": prompt, **kwargs}
+        payload = {"prompt": prompt, "kwargs": kwargs}
+        #print(f'#> kwargs: "{kwargs}" (type={type(kwargs)})')
+        #print(f'#> payload: "{payload}" (type={type(payload)})')
         response = requests.post(self.url, json=payload, headers=self.headers)
         try:
             return response.json()
