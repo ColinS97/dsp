@@ -110,9 +110,12 @@ class GPT3(LM):
         return self.basic_request(prompt, **kwargs)
 
     def _get_choice_text(self, choice: dict[str, Any]) -> str:
-        if self.model_type == "chat":
-            return choice["message"]["content"]
-        return choice["text"]
+        try:
+            if self.model_type == "chat":
+                    return choice["message"]["content"]          
+            return choice["text"]
+        except KeyError:
+            return "[DEBUG]Could not generate. content_filter[DEBUG]"
 
     def __call__(
         self,
