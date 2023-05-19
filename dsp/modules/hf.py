@@ -49,7 +49,7 @@ class HFModel(LM):
             if model[0] == "/":
                 #this is basically my mini trick to check if model is a path and if that is the case it shall be loaded as a llama model
                 if len(model.split("+"))==2:
-                    self.model = LlamaForCausalLM.from_pretrained(model.split("+")[0], load_in_8bit=True)
+                    self.model = LlamaForCausalLM.from_pretrained(model.split("+")[0], load_in_8bit=True, device_map=hf_device_map)
                 
                     self.model = PeftModel.from_pretrained(
                         self.model,
@@ -57,7 +57,7 @@ class HFModel(LM):
                         torch_dtype=torch.float16,
                     )
                 else:
-                    self.model = LlamaForCausalLM.from_pretrained(model, load_in_8bit=True)
+                    self.model = LlamaForCausalLM.from_pretrained(model, load_in_8bit=True, device_map=hf_device_map)
             try:
                 self.model = AutoModelForSeq2SeqLM.from_pretrained(
                     model if checkpoint is None else checkpoint,
