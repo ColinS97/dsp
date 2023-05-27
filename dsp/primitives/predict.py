@@ -100,13 +100,27 @@ def _generate(template: Template, **kwargs) -> Callable:
             # Recurse with greedy decoding and a shorter length.
             max_tokens = kwargs.get("max_tokens", dsp.settings.lm.kwargs["max_tokens"])
             max_tokens = min(max(75, max_tokens // 2), max_tokens)
-            new_kwargs = {
+            #NEW CODE START
+            #Determine wheter this is a final generation or not
+            if last_field_idx == len(field_names) - 1:
+                #final generation
+                new_kwargs = {
                 **kwargs,
                 "max_tokens": max_tokens,
                 "n": 1,
                 "temperature": 0.0,
+                "stop": "\n"
             }
-
+            else:
+                #not final generation
+                new_kwargs = {
+                    **kwargs,
+                    "max_tokens": max_tokens,
+                    "n": 1,
+                    "temperature": 0.0,
+                    "stop": "\n\n"
+                }
+            #NEW CODE END
             assert max_depth > 0
             return generate(template, **new_kwargs)(
                 completion,
