@@ -53,7 +53,7 @@ def evaluateAnswer(fn, dev, metric=EM):
     pd.options.display.max_colwidth = None
     display(df.style.set_table_styles([{'selector': 'th', 'props': [('text-align', 'left')]}, {'selector': 'td', 'props': [('text-align', 'left')]}]))
 
-def evaluate(fn, dev, metric=EM, return_df=False):
+def evaluate(fn, dev, metric=EM, return_df=False, display_df=True):
     data = []
 
     for example in tqdm.tqdm(dev):
@@ -82,7 +82,8 @@ def evaluate(fn, dev, metric=EM, return_df=False):
     df['correct'] = df['correct'].apply(lambda x:'⚠️' if x == 'Error' else '✔️' if x else '❌')
 
     pd.options.display.max_colwidth = None
-    display(df.style.set_table_styles([{'selector': 'th', 'props': [('text-align', 'left')]}, {'selector': 'td', 'props': [('text-align', 'left')]}]))
+    if display_df:
+        display(df.style.set_table_styles([{'selector': 'th', 'props': [('text-align', 'left')]}, {'selector': 'td', 'props': [('text-align', 'left')]}]))
     if not return_df:
         return percentage
     else:
