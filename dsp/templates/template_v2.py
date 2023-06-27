@@ -220,7 +220,7 @@ class TemplateV2:
                 self.instructions,
                 self.guidelines(show_guidelines),
                 *ademos,
-                "\n### Assistant:\n"query,
+                "\n### Assistant:\n"+query,
             ]
         else:
             parts = [
