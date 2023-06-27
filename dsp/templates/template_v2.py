@@ -233,4 +233,4 @@ class TemplateV2:
 
         prompt = "\n\n---\n\n".join([p.strip() for p in parts if p])
 
-        return prompt.strip()
+        return prompt.strip()+"\n### Assistant:\n"
