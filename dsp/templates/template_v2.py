@@ -220,6 +220,7 @@ class TemplateV2:
                 self.instructions,
                 self.guidelines(show_guidelines),
                 *ademos,
+                query,
             ]
         else:
             parts = [
@@ -227,6 +228,7 @@ class TemplateV2:
                 rdemos,
                 self.guidelines(show_guidelines),
                 *ademos,
+                query,
             ]
 
         prompt = "\n\n---\n\n".join([p.strip() for p in parts if p])
